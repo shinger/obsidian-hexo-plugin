@@ -1,4 +1,20 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, FileSystemAdapter } from "obsidian";
+/*
+ * @Author: huajingyang 3373238891@qq.com
+ * @Date: 2025-12-18 09:35:23
+ * @LastEditors: huajingyang 3373238891@qq.com
+ * @LastEditTime: 2025-12-18 17:09:13
+ * @FilePath: \.obsidian\plugins\hexo-publisher\main.ts
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
+import {
+	App,
+	Editor,
+	MarkdownView,
+	Modal,
+	Notice,
+	Plugin,
+	FileSystemAdapter,
+} from "obsidian";
 import HexoPublisherSettingTab from "settings";
 import { publishToHexo } from "utils";
 const path = require("path");
@@ -19,40 +35,6 @@ export default class HexoPublisherPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		// This creates an icon in the left ribbon.
-		const ribbonIconEl = this.addRibbonIcon(
-			"dice",
-			"Sample Plugin",
-			(_evt: MouseEvent) => {
-				// Called when the user clicks the icon.
-				new Notice("This is a notice!");
-			}
-		);
-		// Perform additional things with the ribbon
-		ribbonIconEl.addClass("my-plugin-ribbon-class");
-
-		// This adds a status bar item to the bottom of the app. Does not work on mobile apps.
-		const statusBarItemEl = this.addStatusBarItem();
-		statusBarItemEl.setText("Status Bar Text");
-
-		this.addCommand({
-			id: "move-file-to-hexo",
-			name: "Move file to hexo",
-			callback: () => {
-				new Notice("Move file to hexo command executed");
-			},
-		});
-
-		// This adds an editor command that can perform some operation on the current editor instance
-		this.addCommand({
-			id: "sample-editor-command",
-			name: "Sample editor command",
-			editorCallback: (editor: Editor, _view: MarkdownView) => {
-				console.log(editor.getSelection());
-				editor.replaceSelection("Sample Editor Command");
-			},
-		});
-
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new HexoPublisherSettingTab(this.app, this));
 
@@ -62,28 +44,19 @@ export default class HexoPublisherPlugin extends Plugin {
 					item.setTitle("Publish to Hexo 👈")
 						.setIcon("file-input")
 						.onClick(async () => {
-							console.log(this.app.vault.adapter.getFullPath(file.path));
+							console.log(file);
+							console.log(
+								this.app.vault.adapter.getFullPath(file.path)
+							);
 							await publishToHexo(
 								this.app.vault.adapter.getFullPath(file.path),
 								path.join(
 									this.settings.hexoFileFolder,
 									"\\source\\_posts\\" + file.name
-								)
+								),
+								file.basename,
+								file.parent.name
 							);
-							// new Notice(this.app.vault.adapter.getFullPath(file.path));
-							// await moveFile(
-							// 	path.join(__dirname, file.path),
-							// 	path.join(
-							// 		this.settings.hexoFileFolder,
-							// 		"\\source\\_posts\\" + file.name
-							// 	)
-							// );
-							// new Notice(
-							// 	"文件已移动到" +
-							// 		this.settings.hexoFileFolder +
-							// 		"\\source\\_posts\\" +
-							// 		file.name
-							// );
 						});
 				});
 			})
@@ -99,33 +72,9 @@ export default class HexoPublisherPlugin extends Plugin {
 								new Notice("未选择文件");
 								return;
 							}
-							// await moveFile(
-							// 	path.join(__dirname, view.file.path),
-							// 	path.join(
-							// 		this.settings.hexoFileFolder,
-							// 		"\\source\\_posts\\" + view.file.name
-							// 	)
-							// );
-							// new Notice(
-							// 	"文件已移动到" +
-							// 		this.settings.hexoFileFolder +
-							// 		"\\source\\_posts\\" +
-							// 		view.file.name
-							// );
 						});
 				});
 			})
-		);
-
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		// this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-		// 	console.log("click", evt);
-		// });
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(
-			window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000)
 		);
 	}
 
@@ -143,47 +92,3 @@ export default class HexoPublisherPlugin extends Plugin {
 		await this.saveData(this.settings);
 	}
 }
-
-// class SampleModal extends Modal {
-// 	constructor(app: App) {
-// 		super(app);
-// 	}
-
-// 	onOpen() {
-// 		const { contentEl } = this;
-// 		contentEl.setText("Woah!");
-// 	}
-
-// 	onClose() {
-// 		const { contentEl } = this;
-// 		contentEl.empty();
-// 	}
-// }
-
-// class SampleSettingTab extends PluginSettingTab {
-// 	plugin: ;
-
-// 	constructor(app: App, plugin: MyPlugin) {
-// 		super(app, plugin);
-// 		this.plugin = plugin;
-// 	}
-
-// 	display(): void {
-// 		const { containerEl } = this;
-
-// 		containerEl.empty();
-
-// 		new Setting(containerEl)
-// 			.setName("Hexo file folder")
-// 			.setDesc("Folder to store hexo files")
-// 			.addText((text) =>
-// 				text
-// 					.setPlaceholder("Enter your secret")
-// 					.setValue(this.plugin.settings.mySetting)
-// 					.onChange(async (value) => {
-// 						this.plugin.settings.mySetting = value;
-// 						await this.plugin.saveSettings();
-// 					})
-// 			);
-// 	}
-// }
