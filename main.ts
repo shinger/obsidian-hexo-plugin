@@ -2,7 +2,7 @@
  * @Author: huajingyang 3373238891@qq.com
  * @Date: 2025-12-18 09:35:23
  * @LastEditors: huajingyang 3373238891@qq.com
- * @LastEditTime: 2025-12-18 17:09:13
+ * @LastEditTime: 2025-12-18 17:26:06
  * @FilePath: \.obsidian\plugins\hexo-publisher\main.ts
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -72,6 +72,17 @@ export default class HexoPublisherPlugin extends Plugin {
 								new Notice("未选择文件");
 								return;
 							}
+							await publishToHexo(
+								this.app.vault.adapter.getFullPath(
+									view.file.path
+								),
+								path.join(
+									this.settings.hexoFileFolder,
+									"\\source\\_posts\\" + view.file.name
+								),
+								view.file.basename,
+								view.file.parent.name
+							);
 						});
 				});
 			})
