@@ -34,7 +34,7 @@ export default class HexoPublisherPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on("file-menu", (menu, file) => {
 				menu.addItem((item) => {
-					item.setTitle("👉 Publish to Hexo")
+					item.setTitle("Publish to Hexo 👈")
 						.setIcon("file-input")
 						.onClick(async () => {
 							await moveToHexo(
@@ -60,37 +60,6 @@ export default class HexoPublisherPlugin extends Plugin {
 								});
 						});
 				})
-					.addItem((item) => {
-						item.setTitle("👉 hexo clean")
-							.setIcon("file-x")
-							.onClick(async () => {
-								await clean(this.settings.hexoFileFolder);
-								new Notice("已清除public目录");
-							});
-					})
-					.addItem((item) => {
-						item.setTitle("👉 hexo generate")
-							.setIcon("file-check")
-							.onClick(async () => {
-								new Notice("正在生成...");
-								generate(this.settings.hexoFileFolder).then(
-									({ stdout, stderr }) => {
-										console.log("stdout: ", stdout);
-										console.log("stderr: ", stderr);
-										new Notice("生成完成！");
-									}
-								);
-							});
-					})
-					.addItem((item) => {
-						item.setTitle("👉 hexo deploy")
-							.setIcon("upload")
-							.onClick(async () => {
-								new Notice("正在部署...");
-								await deploy(this.settings.hexoFileFolder);
-								new Notice("部署完成！");
-							});
-					});
 			})
 		);
 
