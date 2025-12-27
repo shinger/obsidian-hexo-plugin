@@ -37,7 +37,7 @@ async function publish(path: string) {
 		console.log("path: ", path);
 		try {
 			exec(
-				"hexo clean & hexo generate --deploy",
+				"hexo generate --deploy",
 				{
 					encoding: "utf8",
 					windowsHide: false,

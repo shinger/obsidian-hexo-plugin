@@ -1,12 +1,8 @@
 import {
-	App,
-	Editor,
-	MarkdownView,
-	Modal,
 	Notice,
 	Plugin,
 	FileSystemAdapter,
-	addIcon,
+	TFile,
 } from "obsidian";
 import HexoPublisherSettingTab from "settings";
 import { clean, moveToHexo, publish, deploy, generate } from "utils";
@@ -37,13 +33,18 @@ export default class HexoPublisherPlugin extends Plugin {
 					item.setTitle("Publish to Hexo 👈")
 						.setIcon("file-input")
 						.onClick(async () => {
+							if (!file.parent) {
+								new Notice("文件应当位于目录内（目录名作为分类名）");
+								return;
+							}
+
 							await moveToHexo(
-								this.app.vault.adapter.getFullPath(file.path),
+								(this.app.vault.adapter as FileSystemAdapter).getFullPath(file.path),
 								path.join(
 									this.settings.hexoFileFolder,
 									"\\source\\_posts\\" + file.name
 								),
-								file.basename,
+								(file as TFile).basename,
 								file.parent.name
 							);
 
@@ -59,7 +60,7 @@ export default class HexoPublisherPlugin extends Plugin {
 									new Notice(`发布失败：${error.message}`);
 								});
 						});
-				})
+				});
 			})
 		);
 
@@ -73,8 +74,12 @@ export default class HexoPublisherPlugin extends Plugin {
 								new Notice("未选择文件");
 								return;
 							}
+							if (!view.file.parent) {
+								new Notice("文件应当位于目录内（目录名作为分类名）");
+								return;
+							}
 							await moveToHexo(
-								this.app.vault.adapter.getFullPath(
+								(this.app.vault.adapter as FileSystemAdapter).getFullPath(
 									view.file.path
 								),
 								path.join(
